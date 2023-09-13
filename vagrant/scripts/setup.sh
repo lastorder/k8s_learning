@@ -41,3 +41,8 @@ sudo apt-get update
 apt-cache madison kubeadm
 sudo apt-get install -y kubelet=$K8S_VERSION kubeadm=$K8S_VERSION kubectl=$K8S_VERSION
 sudo apt-mark hold kubelet kubeadm kubectl
+
+
+# Set NodeIP for kebelet
+IP_ADDRESS="$(ip -4 addr show enp0s8 | grep "inet" | head -1 |awk '{print $2}' | cut -d/ -f1)"
+echo "Environment=\"KUBELET_EXTRA_ARGS=--node-ip=$IP_ADDRESS\"" >> /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
