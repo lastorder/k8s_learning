@@ -35,6 +35,12 @@ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --kubernetes-version=1.27.5 -
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 ```
+[flannel network issues](https://github.com/flannel-io/flannel/blob/master/Documentation/troubleshooting.md#vagrant)
+```bash
+k edit -n kube-flannel daemonsets.apps kube-flannel-ds
+```
+add "--iface=enp0s8" in the container args
+
 
 ### Setup Worker Node
 SSH To master node virtual machine:
