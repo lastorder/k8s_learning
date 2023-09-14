@@ -13,6 +13,7 @@ cd vagrant
 vagrant up
 ```
 Check file "Vagrantfile" about the virtual Machine detail
+
 Check file "scripts/setup.sh" about the the system config and basic software install
 
 
@@ -73,6 +74,51 @@ alias kn='f() { [ "$1" ] && kubectl config set-context --current --namespace $1 
 ```
 
 
+### Install Ingress
 
+[install ingress by helm] (https://kubernetes.github.io/ingress-nginx/deploy/#quick-start)
+```bash
+helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace
+```
+install [MetalLB](https://metallb.universe.tf/concepts/) to add EXTERNAL-IP for local ingress
+```bash
+helm repo add metallb https://metallb.github.io/metallb
+helm install metallb metallb/metallb -n metallb-system --create-namespace
+```
+[config MetalLB](https://metallb.universe.tf/configuration/)
+```bash
+kubectl apply -f <(echo '
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: first-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.66.200-192.168.66.250
+')
 
+kubectl apply -f <(echo '
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: example
+  namespace: metallb-system
+')
 
+```
+
+[test ingress locally](https://kubernetes.github.io/ingress-nginx/deploy/#local-testing)
+```bash
+kubectl create deployment demo --image=httpd --port=80
+kubectl expose deployment demo
+
+kubectl create ingress demo-localhost --class=nginx \
+  --rule="demo.localdev.me/*=demo:80"
+
+echo "192.168.66.200 demo.localdev.me" >> ~/hosts  
+```
+
+try access [demo.localdev.me](https://demo.localdev.me/)
