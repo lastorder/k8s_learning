@@ -4,7 +4,7 @@
 
 ### Software Install
 - [kubectl](https://kubernetes.io/zh-cn/docs/tasks/tools/#kubectl)
-- [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+- [Parallels](https://kb.parallels.com/en/122843)
 - [Vagrant](https://www.vagrantup.com/docs/installation)
 
 ### Up Virtual Machine
