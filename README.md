@@ -27,20 +27,19 @@ vagrant ssh k8s-master
 
 [Setup control-plan node](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#initializing-your-control-plane-node)
 ```bash
-sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --kubernetes-version=1.27.5 --apiserver-advertise-address=192.168.66.11
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --kubernetes-version=1.32.2 --apiserver-advertise-address=192.168.66.11 
 ```
 
-[Install Network plugin](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#pod-network)
-[List Of Network plugin](https://kubernetes.io/docs/concepts/cluster-administration/addons/#networking-and-network-policy)
-[Deploy Flannel Manually](https://github.com/flannel-io/flannel#deploying-flannel-manually)
-```bash
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-```
+<!-- You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/ -->
+
+[Deploy Flannel](https://github.com/flannel-io/flannel?tab=readme-ov-file#deploying-flannel-with-helm)
 [flannel network issues](https://github.com/flannel-io/flannel/blob/master/Documentation/troubleshooting.md#vagrant)
 ```bash
 k edit -n kube-flannel daemonsets.apps kube-flannel-ds
 ```
-add "--iface=enp0s8" in the container args
+add "--iface=eth1" in the container args
 
 
 ### Setup Worker Node
@@ -122,3 +121,5 @@ echo "192.168.66.200 demo.localdev.me" >> ~/hosts
 ```
 
 try access [demo.localdev.me](https://demo.localdev.me/)
+
+curl --resolve demo.localdev.me:80:192.168.66.200 http://demo.localdev.me:80

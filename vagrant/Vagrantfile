@@ -20,15 +20,16 @@ vm_list = [
 ]
 
 Vagrant.configure(2) do |config|
-    config.vm.box = "ubuntu/jammy64"
+    # config.vm.box = "bento/ubuntu-24.04"
+    config.vm.box = "bento/debian-12"
     vm_list.each do |item|
         config.vm.define item[:name] do |vm_config|
             vm_config.vm.hostname = item[:name]
             vm_config.vm.network "private_network", ip: item[:ip]
-            vm_config.vm.provider "virtualbox" do |vb|
-                vb.memory = item[:mem];
-                vb.cpus = item[:cpu];
-                vb.name = item[:name];
+            vm_config.vm.provider "parallels" do |prl|
+                prl.memory = item[:mem];
+                prl.cpus = item[:cpu];
+                prl.name = item[:name];
             end
             vm_config.vm.provision "shell", path: "scripts/setup.sh"
         end
